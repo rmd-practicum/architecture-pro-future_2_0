@@ -1,10 +1,19 @@
+variable "zone" {
+  type    = string
+  default = "ru-central1-a"
+}
+
 variable "env" {
   type = string
 }
 
+variable "core_fraction" {
+  type = number
+}
+
 variable "cores" {
   type    = number
-  default = 1
+  default = 2
 }
 
 variable "memory" {

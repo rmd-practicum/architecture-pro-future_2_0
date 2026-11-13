@@ -12,19 +12,20 @@ data "yandex_compute_image" "ubuntu" {
 
 resource "yandex_compute_disk" "testvm" {
   name     = "test-vm-disk"
-  type     = "network-ssd"
-  zone     = "ru-central1-a"
+  type     = "network-hdd"
+  zone     = var.zone
   image_id = data.yandex_compute_image.ubuntu.image_id
   size     = var.disk_size
 }
 
 resource "yandex_compute_instance" "testvm" {
   name = var.vmname
-  zone = "ru-central1-a"
+  zone = var.zone
 
   resources {
-    cores  = var.cores
-    memory = var.memory
+    core_fraction = var.core_fraction
+    cores         = var.cores
+    memory        = var.memory
   }
 
   boot_disk {

@@ -7,12 +7,14 @@ terraform {
 }
 
 provider "yandex" {
-  zone = "ru-central1-a"
+  zone = var.zone
 }
 
 module "vm" {
   source         = "./modules/vm"
+  zone           = var.zone
   vmname         = "${var.env}-vm"
+  core_fraction  = var.core_fraction
   cores          = var.cores
   memory         = var.memory
   disk_size      = var.disk_size

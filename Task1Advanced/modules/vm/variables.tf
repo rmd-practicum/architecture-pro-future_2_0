@@ -1,5 +1,13 @@
+variable "zone" {
+  type = string
+}
+
 variable "vmname" {
   type = string
+}
+
+variable "core_fraction" {
+  type = number
 }
 
 variable "cores" {
