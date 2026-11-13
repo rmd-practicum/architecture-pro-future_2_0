@@ -1,9 +1,59 @@
 name: terraform-destroy
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: Target environment
+        type: choice
+        options: [dev, stage, prod]
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  TF_DIR: Task1Advanced
+  YC_CLOUD_ID: ${{ vars.YC_CLOUD_ID }}
+  YC_FOLDER_ID: ${{ vars.YC_FOLDER_ID }}
+  TF_VAR_ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
+  AWS_PROFILE: terraform
 
 jobs:
-  stub:
+  destroy:
     runs-on: ubuntu-latest
+
+    concurrency: terraform-${{ inputs.env }}
+
     steps:
-      - run: echo "Stub to let workflows be dispatched from the project barnch."
+      - uses: actions/checkout@v5
+
+      - uses: hashicorp/setup-terraform@v4
+
+      - name: Get Yandex Cloud IAM token
+        id: get-iam-token
+        uses: docker://ghcr.io/yc-actions/yc-iam-token-fed:1.0.0
+        with:
+          yc-sa-id: ${{ vars.YC_SA_ID }}
+
+      - name: Setup yc CLI
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
+          echo "$HOME/yc/bin" >> "$GITHUB_PATH"
+          "$HOME/yc/bin" config profile create ci
+
+      - name: Issue bucket ephemeral key
+        env:
+          YC_IAM_TOKEN: ${{ steps.get-iam-token.outputs.token }}
+        run: |
+          yc iam access-key issue-ephemeral --session-name github-actions --aws-profile terraform
+
+      - run: cp Task2Advanced/backend.tf "$TF_DIR/backend.tf"
+
+      - run: terraform -chdir="$TF_DIR" init -input=false
+
+      - run: terraform -chdir="$TF_DIR" workspace select ${{ inputs.env }}
+
+      - run: terraform -chdir="$TF_DIR" destroy -auto-approve -input=false -var-file=envs/${{ inputs.env }}/terraform.tfvars
+        env:
+          YC_TOKEN: ${{ steps.get-iam-token.outputs.token }}
