@@ -40,6 +40,10 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v4
 
+      - uses: steve-todorov/oidc-debugger-action@v1
+        with:
+          audience: https://github.com/${{ github.repository_owner }}
+
       - name: Get Yandex Cloud IAM token
         id: get-iam-token
         uses: docker://ghcr.io/yc-actions/yc-iam-token-fed:1.0.0
