@@ -27,6 +27,12 @@
 
     terraform workspace new dev
 
+Указать ключ доступа и идентификаторы облака и каталога:
+
+    export YC_SERVICE_ACCOUNT_KEY_FILE=key.json
+    export YC_CLOUD_ID=<b1...>
+    export YC_FOLDER_ID=<b1...>
+
 Поскольку Subnet ID согласно требованиям задания должен быть параметром, он модулем не создается; ssh-ключ захардкодить тоже нельзя. Поэтому они передаются через переменные окружения:
 
     export TF_VAR_ssh_public_key="$(cat ~/.ssh/id_ed25519.pub)"
