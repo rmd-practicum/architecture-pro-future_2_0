@@ -41,7 +41,7 @@ jobs:
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash -s -- -i "$HOME/yc" -n
           echo "$HOME/yc/bin" >> "$GITHUB_PATH"
-          "$HOME/yc/bin" config profile create ci
+          "$HOME/yc/bin/yc" config profile create ci
 
       - name: Issue bucket ephemeral key
         env:
