@@ -16,8 +16,8 @@ env:
   TF_DIR: Task1Advanced
   YC_CLOUD_ID: ${{ vars.YC_CLOUD_ID }}
   YC_FOLDER_ID: ${{ vars.YC_FOLDER_ID }}
-  YC_SUBNET_ID: ${{ vars.YC_SUBNET_ID }}
   TF_VAR_ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
+  TF_VAR_subnet_id: ${{ vars.YC_SUBNET_ID }}
   AWS_PROFILE: terraform
 
 jobs:
@@ -55,6 +55,6 @@ jobs:
 
       - run: terraform -chdir="$TF_DIR" workspace select ${{ inputs.env }}
 
-      - run: terraform -chdir="$TF_DIR" destroy -auto-approve -input=false -var-file=envs/${{ inputs.env }}/terraform.tfvars -var="subnet_id=$YC_SUBNET_ID"
+      - run: terraform -chdir="$TF_DIR" destroy -auto-approve -input=false -var-file=envs/${{ inputs.env }}/terraform.tfvars
         env:
           YC_TOKEN: ${{ steps.get-iam-token.outputs.token }}
