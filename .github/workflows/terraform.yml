@@ -24,6 +24,7 @@ env:
   TF_DIR: Task1Advanced
   YC_CLOUD_ID: ${{ vars.YC_CLOUD_ID }}
   YC_FOLDER_ID: ${{ vars.YC_FOLDER_ID }}
+  YC_SUBNET_ID: ${{ vars.YC_SUBNET_ID }}
   TF_VAR_ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
   AWS_PROFILE: terraform
 
@@ -70,12 +71,12 @@ jobs:
 
       - name: Plan
         if: github.event_name == 'workflow_dispatch' && inputs.command == 'plan'
-        run: terraform -chdir="$TF_DIR" plan -input=false -var-file="envs/$TF_ENV/terraform.tfvars"
+        run: terraform -chdir="$TF_DIR" plan -input=false -var-file="envs/$TF_ENV/terraform.tfvars" -var="subnet_id=$YC_SUBNET_ID"
         env:
           YC_TOKEN: ${{ steps.get-iam-token.outputs.token }}
 
       - name: Apply
         if: github.event_name == 'push' || inputs.command == 'apply'
-        run: terraform -chdir="$TF_DIR" apply -auto-approve -input=false -var-file="envs/$TF_ENV/terraform.tfvars"
+        run: terraform -chdir="$TF_DIR" apply -auto-approve -input=false -var-file="envs/$TF_ENV/terraform.tfvars" -var="subnet_id=$YC_SUBNET_ID"
         env:
           YC_TOKEN: ${{ steps.get-iam-token.outputs.token }}
