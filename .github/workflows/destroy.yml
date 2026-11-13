@@ -1,0 +1,9 @@
+name: terraform-destroy
+
+on: workflow_dispatch
+
+jobs:
+  stub:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Stub to let workflows be dispatched from the project barnch."
