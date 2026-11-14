@@ -4,3 +4,8 @@ venv
 
 # Draw.io backup files
 .$*.bkp
+
+Task1Advanced/key.json
+
+.terraform/
+*.tfstate*
